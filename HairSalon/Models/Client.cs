@@ -49,7 +49,7 @@ namespace HairSalon.Models
           cmd.Parameters.Add(stylistIdNum);
 
           cmd.ExecuteNonQuery();
-          
+
           _id = (int) cmd.LastInsertedId;
 
           conn.Close();
@@ -153,6 +153,24 @@ namespace HairSalon.Models
           {
               conn.Dispose();
           }
+      }
+      public override bool Equals(System.Object otherItem)
+      {
+        if (!(otherItem is Client))
+        {
+          return false;
+        }
+        else
+        {
+           Client newItem = (Client) otherItem;
+           bool idEquality = this.GetId() == newItem.GetId();
+           bool nameEquality = this.GetName() == newItem.GetName();
+           return (idEquality && nameEquality);
+         }
+      }
+      public override int GetHashCode()
+      {
+           return this.GetName().GetHashCode();
       }
   }
 }
