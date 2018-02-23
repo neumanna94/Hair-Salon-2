@@ -9,7 +9,7 @@ namespace HairSalon.Models
     {
         private int _id;
         private string _name;
-        private static string _orderBy;
+        private static string _orderBy = "id";
         // List<Client> allClients = new List<Client>{};
 
         public Stylist(string name,int Id = 0)
