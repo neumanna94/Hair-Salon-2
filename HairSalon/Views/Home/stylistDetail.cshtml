@@ -11,6 +11,14 @@
   <div class = "container">
     <div class = "row">
       <div class = "col-md-12">
+        <h2> Results </h2>
+        @if (Model != null)
+        {
+          <h4>Name:@Model.GetName()</h4>
+          <button type="button" class="btn"><a href="/">Home</a></button>
+          <button type="button" class="btn"><a href="/new/client">Schedule an Appointment</a></button>
+          <button type="button" class="btn"><a href="/stylists">All Stylists</a></button>
+        }
       </div>
     </div>
   <div id="footer"><br> Alexander Neumann February 23rd, 2018</div>
