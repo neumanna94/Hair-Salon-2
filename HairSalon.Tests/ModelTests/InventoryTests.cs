@@ -1,14 +1,14 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Inventory.Models;
-namespace Inventory.Tests
+using HairSalon.Models;
+namespace HairSalon.Tests
 {
     [TestClass]
-    public class InventoryTest
+    public class HairSalonTests
     {
         [TestMethod]
-        public void InventoryTester()
+        public void HairSalonTester()
         {
         }
       }

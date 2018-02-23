@@ -1,24 +1,21 @@
 using System.Collections.Generic;
 using MySql.Data.MySqlClient;
-using Inventory;
+using HairSalon;
 using System;
 
-namespace Inventory.Models
+namespace HairSalon.Models
 {
-    public class Item
+    public class Stylist
     {
         private int _id;
         private string _name;
-        private int _cost;
-        private string _postDate = "";
-        public static string _orderBy = "id";
+        private static string _orderBy;
+        // List<Client> allClients = new List<Client>{};
 
-        public Item(string name, int cost, string postDate, int Id = 0)
+        public Stylist(string name,int Id = 0)
         {
             _id = Id;
             _name = name;
-            _cost = cost;
-            _postDate = postDate;
         }
         public int GetId()
         {
@@ -28,40 +25,23 @@ namespace Inventory.Models
         {
             return _name;
         }
-        public int GetCost()
-        {
-            return _cost;
-        }
-        public string GetPostDate()
-        {
-            return _postDate;
-        }
+
         public static void SetOrderBy(string orderBy)
         {
             _orderBy = orderBy;
         }
+
         public void Save()
         {
             MySqlConnection conn = DB.Connection();
             conn.Open();
             MySqlCommand cmd = conn.CreateCommand() as MySqlCommand;
-            cmd.CommandText = @"INSERT INTO inventory_amazon (name, cost, postDate) VALUES (@ItemName, @ItemCost, @ItemPostDate);";
+            cmd.CommandText = @"INSERT INTO stylists name VALUES @StylistName;";
 
             MySqlParameter name = new MySqlParameter();
-            name.ParameterName = "@ItemName";
+            name.ParameterName = "@StylistName";
             name.Value = _name;
             cmd.Parameters.Add(name);
-
-            MySqlParameter cost = new MySqlParameter();
-            cost.ParameterName = "@ItemCost";
-            cost.Value = _cost;
-            cmd.Parameters.Add(cost);
-
-            MySqlParameter postDate = new MySqlParameter();
-            postDate.ParameterName = "@ItemPostDate";
-            postDate.Value = _postDate;
-            cmd.Parameters.Add(postDate);
-            cmd.ExecuteNonQuery();
 
             _id = (int) cmd.LastInsertedId;
 
@@ -72,33 +52,26 @@ namespace Inventory.Models
             }
         }
 
-        public static List<Item> GetAll()
+        public static List<Stylist> GetAll()
         {
             //Opening Database Connection.
-            List<Item> allItems = new List<Item> {};
+            List<Stylist> allStylists = new List<Stylist> {};
             MySqlConnection conn = DB.Connection();
             conn.Open();
             //Casting and Executing Commands.
             MySqlCommand cmd = conn.CreateCommand() as MySqlCommand;
-            cmd.CommandText = @"SELECT * FROM inventory_amazon ORDER BY "+_orderBy+";";
 
-            // MySqlParameter searchId = new MySqlParameter();
-            // searchId.ParameterName = "@searchId";
-            // searchId.Value = "cost";
-            // cmd.Parameters.Add(searchId);
-            // cmd.Parameters.AddWithValue("@searchId", "cost");
+            cmd.CommandText = @"SELECT * FROM stylists ORDER BY "+ _orderBy + ";";
 
             MySqlDataReader rdr = cmd.ExecuteReader() as MySqlDataReader;
             //Contains built in method .Read()
             while(rdr.Read())
             {
-              int itemId = rdr.GetInt32(0);
+              int stylistId = rdr.GetInt32(0);
               string name = rdr.GetString(1);
-              int cost = rdr.GetInt32(2);
-              string postDate = rdr.GetString(3);
 
-              Item newItem = new Item(name, cost, postDate, itemId);
-              allItems.Add(newItem);
+              Stylist newStylist = new Stylist(name, stylistId);
+              allStylists.Add(newStylist);
             }
             //Close connection
             conn.Close();
@@ -106,14 +79,15 @@ namespace Inventory.Models
             {
                 conn.Dispose();
             }
-            return allItems;
+            return allStylists;
         }
-        public static Item Find(int id)
+
+        public static Stylist Find(int id)
         {
             MySqlConnection conn = DB.Connection();
             conn.Open();
             var cmd = conn.CreateCommand() as MySqlCommand;
-            cmd.CommandText = @"SELECT * FROM inventory_amazon WHERE id = (@searchId);";
+            cmd.CommandText = @"SELECT * FROM stylists WHERE id = (@searchId);";
 
             MySqlParameter searchId = new MySqlParameter();
             searchId.ParameterName = "@searchId";
@@ -121,25 +95,21 @@ namespace Inventory.Models
             cmd.Parameters.Add(searchId);
 
             var rdr = cmd.ExecuteReader() as MySqlDataReader;
-            int itemId = 0;
+            int stylistId = 0;
             string name = "";
-            int cost = 0;
-            string postDate = "";
 
             while(rdr.Read())
             {
-                itemId = rdr.GetInt32(0);
+                stylistId = rdr.GetInt32(0);
                 name = rdr.GetString(1);
-                cost = rdr.GetInt32(2);
-                postDate = rdr.GetString(3);
             }
-            Item newItem = new Item(name, cost, postDate, itemId);
+            Stylist newStylist = new Stylist(name, stylistId);
             conn.Close();
             if (conn != null)
             {
                 conn.Dispose();
             }
-            return newItem;
+            return newStylist;
         }
 
         public static void DeleteAll()
@@ -147,7 +117,7 @@ namespace Inventory.Models
             MySqlConnection conn = DB.Connection();
             conn.Open();
             var cmd = conn.CreateCommand() as MySqlCommand;
-            cmd.CommandText = @"DELETE FROM items;";
+            cmd.CommandText = @"DELETE FROM stylists;";
             cmd.ExecuteNonQuery();
             conn.Close();
             if (conn != null)
@@ -160,7 +130,7 @@ namespace Inventory.Models
             MySqlConnection conn = DB.Connection();
             conn.Open();
             var cmd = conn.CreateCommand() as MySqlCommand;
-            cmd.CommandText = @"DELETE FROM inventory_amazon WHERE id = @searchId;";
+            cmd.CommandText = @"DELETE FROM stylists WHERE id = @searchId;";
 
             MySqlParameter searchId = new MySqlParameter();
             searchId.ParameterName = "@searchId";
@@ -174,17 +144,5 @@ namespace Inventory.Models
                 conn.Dispose();
             }
         }
-        public static string DisplayList()
-        {
-            List<Item> allItems = new List<Item>{};
-            string outputString = "";
-            allItems = GetAll();
-            for(int i = 0; i < allItems.Count; i ++)
-            {
-                outputString += "(" + allItems[i].GetId() + ", " + allItems[i].GetName() + ", " + allItems[i].GetCost() + ", " + allItems[i].GetPostDate() +  ") ";
-            }
-            return outputString;
-        }
     }
-
 }
