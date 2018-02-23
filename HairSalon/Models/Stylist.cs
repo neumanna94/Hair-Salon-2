@@ -10,7 +10,6 @@ namespace HairSalon.Models
         private int _id;
         private string _name;
         private static string _orderBy = "id";
-        // List<Client> allClients = new List<Client>{};
 
         public Stylist(string name,int Id = 0)
         {
@@ -110,6 +109,58 @@ namespace HairSalon.Models
                 conn.Dispose();
             }
             return newStylist;
+        }
+
+        public string FindClientsToString(List<Client> inputList)
+        {
+            string outputString = "";
+            for(int i = 0; i < inputList.Count; i ++)
+            {
+                outputString = outputString + inputList[i].GetName() + ", ";
+            }
+
+            if(outputString.Length > 0)
+            {
+                outputString = outputString.Remove(outputString.Length-2, 1);
+            } else {
+                outputString = "Currently no clients for this stylist!";
+            }
+            return outputString;
+        }
+
+        public string FindClients()
+        {
+            //Opening Database Connection.
+            List<Client> allClients = new List<Client> {};
+            MySqlConnection conn = DB.Connection();
+            conn.Open();
+            //Casting and Executing Commands.
+            MySqlCommand cmd = conn.CreateCommand() as MySqlCommand;
+
+            cmd.CommandText = @"SELECT * FROM clients WHERE stylistID = (@searchId);";
+            MySqlParameter searchId = new MySqlParameter();
+            searchId.ParameterName = "@searchId";
+            searchId.Value = _id;
+            cmd.Parameters.Add(searchId);
+
+            MySqlDataReader rdr = cmd.ExecuteReader() as MySqlDataReader;
+            //Contains built in method .Read()
+            while(rdr.Read())
+            {
+                int clientId = rdr.GetInt32(0);
+                string name = rdr.GetString(1);
+                int stylistId = rdr.GetInt32(2);
+
+                Client newClient = new Client(name, clientId, stylistId);
+                allClients.Add(newClient);
+            }
+            //Close connection
+            conn.Close();
+            if (conn != null)
+            {
+                conn.Dispose();
+            }
+            return FindClientsToString(allClients);
         }
 
         public static void DeleteAll()

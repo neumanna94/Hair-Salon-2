@@ -21,10 +21,19 @@ namespace HairSalon.Controllers
             return View("newStylist");
         }
 
-        [HttpGet("/new/client")]
-        public ActionResult newClient()
+        [HttpGet("/new/client/{id}")]
+        public ActionResult newClient(int id)
         {
-            return View("newClient");
+
+            return View("newClient", id);
+        }
+        [HttpPost("/new/client/{id}")]
+        public ActionResult newClientPost(int id)
+        {
+            string name = Request.Form["name"];
+            Client newClient = new Client(name, 0, id);
+            newClient.Save();
+            return RedirectToAction("StylistDetail", id);
         }
 
         [HttpPost("/new/stylist")]
@@ -35,17 +44,6 @@ namespace HairSalon.Controllers
             newStylist.Save();
             return RedirectToAction("newStylist");
         }
-
-        [HttpPost("/new/client")]
-        public ActionResult newClientPost()
-        {
-            string name = Request.Form["name"];
-            string stylist = Request.Form["stylist"];
-            Client newClient = new Client(name, Int32.Parse(stylist), 0);
-            newClient.Save();
-            return RedirectToAction("newClient");
-        }
-
         [HttpGet("/stylists")]
         public ActionResult Stylists(int id)
         {
@@ -57,6 +55,5 @@ namespace HairSalon.Controllers
         {
             return View(Stylist.Find(id));
         }
-
     }
 }
