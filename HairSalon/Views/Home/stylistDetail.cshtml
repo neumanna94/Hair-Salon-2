@@ -12,10 +12,45 @@
     <div class = "row">
       <div class = "col-md-12">
         <h2> Stylist Information Page </h2>
+        <hr>
         @if (Model != null)
         {
-          <h4>Name:@Model.GetName()</h4>
-          <h4>Clients: @Model.FindClients()</h4>
+          <h4>Name:@Model.GetName()  <button type="button" class="btn" id="changeName"><span class="glyphicon glyphicon-cog"></span></button></h4>
+          <form id="changeName" action = "/stylists/new/name/@Model.GetId()" method = "post">
+            <div class="form-group initHidden" id="nameGroup">
+              <label for="nameInput">Change Stylist Name To:</label>
+              <input type="text" name="nameInput" value="@Model.GetName()">
+              <button type="submit" class="btn">Change</button>
+            </div>
+          </form>
+          <hr>
+          <h4>Specialities:</h4>
+          <ul>
+            @foreach (var speciality in ViewBag.Specialities)
+            {
+              <li>@speciality.GetName()</li>
+            }
+          </ul>
+          <hr>
+          <h4>Clients:</h4>
+          <ul>
+          @foreach (var client in @Model.FindClients())
+          {
+            <li><a href = "/client/display/@Model.GetId()">@Model.GetName()</a></li>
+          }
+          </ul>
+          <hr>
+          <form id="newSpeciality" action = "/stylists/@Model.GetId()" method = "post">
+            <label for='specialityId'> Add more Specialities to @Model.GetName(): </label>
+            <select class="form-control" name="specialityId">
+              @foreach (var speciality in ViewBag.AllSpecialities)
+              {
+                <option value="@speciality.GetId()">@speciality.GetName()</option>
+              }
+            </select>
+            <button type="submit" class="btn">Add Speciality to @Model.GetName()</button>
+          </form>
+          <hr>
           <button type="button" class="btn"><a href="/">Home</a></button>
           <button type="button" class="btn"><a href="/new/client/@Model.GetId()">Schedule an Appointment</a></button>
           <button type="button" class="btn"><a href="/stylists">All Stylists</a></button>
@@ -24,3 +59,12 @@
     </div>
   <div id="footer"><br> Alexander Neumann February 23rd, 2018</div>
 </body>
+
+<script type="text/javascript">
+  $(document).ready(function(){
+    $(".initHidden").toggleClass("hidden");
+    $("#changeName").click(function(){
+        $(".initHidden").toggleClass("hidden");
+    });
+  });
+</script>

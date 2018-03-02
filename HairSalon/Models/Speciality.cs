@@ -19,6 +19,15 @@ namespace HairSalon.Models
             _stylistId = stylistId;
             _name = name;
         }
+        public Speciality(string name, int Id = 0)
+        {
+            _id = Id;
+            _name = name;
+        }
+        public Speciality(int Id = 0)
+        {
+            _id = Id;
+        }
         public int GetId()
         {
             return _id;
@@ -30,6 +39,10 @@ namespace HairSalon.Models
         public string GetName()
         {
             return _name;
+        }
+        public void SetId(int id)
+        {
+            _id = id;
         }
 
         public static void SetOrderBy(string orderBy)
@@ -116,6 +129,37 @@ namespace HairSalon.Models
             return stylistOutput;
         }
 
+        public List<Speciality> SpecialitiesOfStylist(int tempStylistId)
+        {
+            List<Speciality> specialityOutput = new List<Speciality>{};
+            MySqlConnection conn = DB.Connection();
+            conn.Open();
+            MySqlCommand cmd = conn.CreateCommand() as MySqlCommand;
+            cmd.CommandText = @"SELECT specialities.* FROM stylists JOIN stylists_specialities ON (stylists.id = stylists_specialities.stylist_id) JOIN specialities ON (specialities.id = stylists_specialities.speciality_id) WHERE stylists.id = @StylistsId;";
+
+            MySqlParameter specialityId = new MySqlParameter();
+            specialityId.ParameterName = "@StylistsId";
+            specialityId.Value = tempStylistId;
+            cmd.Parameters.Add(specialityId);
+
+            var rdr = cmd.ExecuteReader() as MySqlDataReader;
+            while (rdr.Read())
+            {
+                int stylistId = (int) rdr.GetInt32(0);
+                string specialityName = rdr.GetString(1);
+                Speciality mySpeciality = new Speciality(specialityName);
+                mySpeciality.SetId(stylistId);
+                specialityOutput.Add(mySpeciality);
+            }
+
+            conn.Close();
+            if (conn != null)
+            {
+                conn.Dispose();
+            }
+            return specialityOutput;
+        }
+
         public static List<Speciality> GetAll()
         {
             //Opening Database Connection.
@@ -133,9 +177,8 @@ namespace HairSalon.Models
             {
               int specialityId = rdr.GetInt32(0);
               string name = rdr.GetString(1);
-              int stylistId = rdr.GetInt32(2);
 
-              Speciality newSpeciality = new Speciality(name, stylistId, specialityId);
+              Speciality newSpeciality = new Speciality(name, specialityId);
               allSpecialities.Add(newSpeciality);
             }
             //Close connection

@@ -16,6 +16,11 @@ namespace HairSalon.Models
             _id = Id;
             _name = name;
         }
+        public Stylist(int Id = 0)
+        {
+            _id = Id;
+            _name = "";
+        }
         public int GetId()
         {
             return _id;
@@ -133,7 +138,7 @@ namespace HairSalon.Models
             return outputString;
         }
 
-        public string FindClients()
+        public List<Client> FindClients()
         {
             //Opening Database Connection.
             List<Client> allClients = new List<Client> {};
@@ -165,7 +170,7 @@ namespace HairSalon.Models
             {
                 conn.Dispose();
             }
-            return FindClientsToString(allClients);
+            return allClients;
         }
 
         public static void DeleteAll()

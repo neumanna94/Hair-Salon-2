@@ -16,7 +16,14 @@
       <div class="col-md-12">
         <form id="newStylist" action = "/new/stylist" method = "post">
            <label for='name'>Enter Stylists Name: </label>
-           <input id='name' name='name' class='form-control' type='text'>
+           <input id='name' name='name' class='form-control' type='text' required>
+           <label for='specialityId'> Select a Speciality for this Stylist: </label>
+           <select class="form-control" name="specialityId">
+             @foreach (var speciality in ViewBag.Specialities)
+             {
+               <option value="@speciality.GetId()">@speciality.GetName()</option>
+             }
+           </select>
            <button type="submit" class="btn">Add Stylist</button>
          </form>
         <button type="button" class="btn"><a href="/">Home</a></button>

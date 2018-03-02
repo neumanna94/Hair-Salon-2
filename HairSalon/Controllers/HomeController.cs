@@ -18,6 +18,7 @@ namespace HairSalon.Controllers
         [HttpGet("/new/stylist")]
         public ActionResult newStylist()
         {
+            ViewBag.Specialities = Speciality.GetAll();
             return View("newStylist");
         }
 
@@ -40,8 +41,14 @@ namespace HairSalon.Controllers
         public ActionResult newStylistPost()
         {
             string name = Request.Form["name"];
+            string specialityId = Request.Form["specialityId"];
+
             Stylist newStylist = new Stylist(name, 0);
             newStylist.Save();
+
+            Speciality newSpeciality = new Speciality();
+            newSpeciality.Stylist_Specialities_Save(newStylist.GetId(),Int32.Parse(specialityId));
+
             return RedirectToAction("newStylist");
         }
         [HttpGet("/stylists")]
@@ -53,7 +60,33 @@ namespace HairSalon.Controllers
         [HttpGet("/stylists/{id}")]
         public ActionResult StylistDetail(int id)
         {
+            Speciality newSpeciality = new Speciality();
+            ViewBag.Specialities = newSpeciality.SpecialitiesOfStylist(id);
+            ViewBag.AllSpecialities = Speciality.GetAll();
             return View(Stylist.Find(id));
+        }
+
+        [HttpPost("/stylists/{id}")]
+        public ActionResult AddStyletoStylist(int id)
+        {
+            string specialityId = Request.Form["specialityId"];
+
+            Speciality newSpeciality = new Speciality();
+            newSpeciality.Stylist_Specialities_Save(id,Int32.Parse(specialityId));
+
+            ViewBag.Specialities = newSpeciality.SpecialitiesOfStylist(id);
+            ViewBag.AllSpecialities = Speciality.GetAll();
+            return RedirectToAction("StylistDetail");
+        }
+        [HttpPost("/stylists/new/name/{id}")]
+        public ActionResult ChangeStylistName(int id)
+        {
+            string newStylistName = Request.Form["nameInput"];
+            Stylist newStylist = new Stylist(id);
+            newStylist.UpdateName(newStylistName);
+
+
+            return RedirectToAction("StylistDetail");
         }
     }
 }
