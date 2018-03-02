@@ -25,6 +25,11 @@ namespace HairSalon.Models
             return _name;
         }
 
+        public void SetId(int id)
+        {
+            _id = id;
+        }
+
         public static void SetOrderBy(string orderBy)
         {
             _orderBy = orderBy;
@@ -189,6 +194,27 @@ namespace HairSalon.Models
             cmd.Parameters.Add(searchId);
 
             cmd.ExecuteNonQuery();
+            conn.Close();
+            if (conn != null)
+            {
+                conn.Dispose();
+            }
+        }
+        public void UpdateName(string inputName)
+        {
+            MySqlConnection conn = DB.Connection();
+            conn.Open();
+            var cmd = conn.CreateCommand() as MySqlCommand;
+            cmd.CommandText = @"UPDATE stylists SET name = @name WHERE id = @userId;";
+
+            MySqlParameter tempName = new MySqlParameter("@name", inputName);
+            MySqlParameter tempUserId = new MySqlParameter("@userId", this.GetId());
+
+            cmd.Parameters.Add(tempName);
+            cmd.Parameters.Add(tempUserId);
+
+            cmd.ExecuteNonQuery();
+
             conn.Close();
             if (conn != null)
             {
