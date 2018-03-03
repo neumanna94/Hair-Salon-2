@@ -14,8 +14,14 @@
     </div>
     <div class = "row">
       <div class="col-md-12">
-        <button type="button" class="btn"><a href="/">Home</a></button>
-        <button type="button" class="btn"><a href="/new/stylist">Register a new Stylist</a></button>
+        <button type="button" class="btn btn-default btn-sm"><a href="/">Home</a></button>
+        <button type="button" class="btn btn-default btn-sm"><a href="/new/stylist">Register a new Stylist</a></button>
+        <button type="button" class="btn btn-default btn-sm">
+          <span class="glyphicon glyphicon-trash"></span><a href="/stylist/display/delete/all"> Delete all Stylists
+        </a></button>
+        <button type="button" class="btn btn-default btn-sm">
+          <span class="glyphicon glyphicon-trash"></span><a href="/client/display/delete/all"> Delete all Clients
+        </a></button>
         <h2> All Stylists </h2>
         @if (Model != null)
         {
@@ -28,5 +34,5 @@
       </div>
     </div>
   </div>
-  <div id="footer"><br> Alexander Neumann February 23rd, 2018</div>
+  <div id="footer"><br> Alexander Neumann March 2nd, 2018</div>
 </body>

@@ -63,6 +63,7 @@ namespace HairSalon.Controllers
             Speciality newSpeciality = new Speciality();
             ViewBag.Specialities = newSpeciality.SpecialitiesOfStylist(id);
             ViewBag.AllSpecialities = Speciality.GetAll();
+            ViewBag.AllClients = Client.FindAllClientByStylistId(id);
             return View(Stylist.Find(id));
         }
 
@@ -85,8 +86,56 @@ namespace HairSalon.Controllers
             Stylist newStylist = new Stylist(id);
             newStylist.UpdateName(newStylistName);
 
-
             return RedirectToAction("StylistDetail");
+        }
+        [HttpGet("/client/display/{id}")]
+        public ActionResult ClientDetail(int id)
+        {
+            Client newClient = new Client();
+            newClient = Client.Find(id);
+
+            ViewBag.ClientStylist = Stylist.Find(newClient.GetStylistId());
+            ViewBag.AllStylists = Stylist.GetAll();
+
+            return View(newClient);
+        }
+        [HttpPost("/client/display/update/{id}")]
+        public ActionResult ClientDetailUpdate(int id)
+        {
+            string name = Request.Form["nameInput"];
+            int stylistId = Int32.Parse(Request.Form["stylistId"]);
+            Client newClient = new Client(id);
+            newClient.Update(name, stylistId);
+
+            return RedirectToAction("ClientDetail");
+        }
+
+        [HttpGet("/client/display/delete/{id}")]
+        public ActionResult ClientDelete(int id)
+        {
+            Client.DeleteRow(id);
+            return RedirectToAction("Stylists");
+        }
+
+        [HttpGet("/client/display/delete/all")]
+        public ActionResult ClientDeleteAll()
+        {
+            Client.DeleteAll();
+            return RedirectToAction("Stylists");
+        }
+
+        [HttpGet("/stylist/display/delete/{id}")]
+        public ActionResult StylistDelete(int id)
+        {
+            Stylist.DeleteRow(id);
+            return RedirectToAction("Stylists");
+        }
+
+        [HttpGet("/stylist/display/delete/all")]
+        public ActionResult StylistDeleteAll()
+        {
+            Stylist.DeleteAll();
+            return RedirectToAction("Stylists");
         }
     }
 }

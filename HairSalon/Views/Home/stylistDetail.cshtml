@@ -34,9 +34,9 @@
           <hr>
           <h4>Clients:</h4>
           <ul>
-          @foreach (var client in @Model.FindClients())
+          @foreach (var client in ViewBag.AllClients)
           {
-            <li><a href = "/client/display/@Model.GetId()">@Model.GetName()</a></li>
+            <li><a href = "/client/display/@client.GetId()">@client.GetName()</a></li>
           }
           </ul>
           <hr>
@@ -51,13 +51,16 @@
             <button type="submit" class="btn">Add Speciality to @Model.GetName()</button>
           </form>
           <hr>
-          <button type="button" class="btn"><a href="/">Home</a></button>
-          <button type="button" class="btn"><a href="/new/client/@Model.GetId()">Schedule an Appointment</a></button>
-          <button type="button" class="btn"><a href="/stylists">All Stylists</a></button>
+          <button type="button" class="btn btn-default btn-sm"><a href="/">Home</a></button>
+          <button type="button" class="btn btn-default btn-sm"><a href="/new/client/@Model.GetId()">Schedule an Appointment</a></button>
+          <button type="button" class="btn btn-default btn-sm">
+            <span class="glyphicon glyphicon-trash"></span><a href="/client/display/delete/@Model.GetId()"> Trash this Stylist
+          </a></button>
+          <button type="button" class="btn btn-default btn-sm"><a href="/stylists">All Stylists</a></button>
         }
       </div>
     </div>
-  <div id="footer"><br> Alexander Neumann February 23rd, 2018</div>
+  <div id="footer"><br> Alexander Neumann March 2nd, 2018</div>
 </body>
 
 <script type="text/javascript">
