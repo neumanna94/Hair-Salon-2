@@ -98,13 +98,13 @@ namespace HairSalon.Models
             }
         }
 
-        public List<Stylist> StylistsWithSpeciality(Speciality inputSpeciality)
+        public static List<Stylist> StylistsWithSpeciality(Speciality inputSpeciality)
         {
             List<Stylist> stylistOutput = new List<Stylist>{};
             MySqlConnection conn = DB.Connection();
             conn.Open();
             MySqlCommand cmd = conn.CreateCommand() as MySqlCommand;
-            cmd.CommandText = @"SELECT stylists.* FROM specialities JOIN stylists_specialities ON (specialities.id = stylists_specialities.speciality_id) JOIN stylists ON (stylist.id = stylists_specialities.stylist_id) WHERE specialities.id = @SpecialityId;";
+            cmd.CommandText = @"SELECT stylists.* FROM specialities JOIN stylists_specialities ON (specialities.id = stylists_specialities.speciality_id) JOIN stylists ON (stylists_specialities.stylist_id = stylists.id) WHERE specialities.id = @SpecialityId;";
 
             MySqlParameter specialityId = new MySqlParameter();
             specialityId.ParameterName = "@SpecialityId";
@@ -205,15 +205,14 @@ namespace HairSalon.Models
             var rdr = cmd.ExecuteReader() as MySqlDataReader;
             int specialityId = 0;
             string name = "";
-            int stylistId = 0;
 
             while(rdr.Read())
             {
                 specialityId = rdr.GetInt32(0);
                 name = rdr.GetString(1);
-                stylistId = rdr.GetInt32(2);
+
             }
-            Speciality newSpeciality = new Speciality(name, stylistId, specialityId);
+            Speciality newSpeciality = new Speciality(name, specialityId);
             conn.Close();
             if (conn != null)
             {

@@ -137,5 +137,49 @@ namespace HairSalon.Controllers
             Stylist.DeleteAll();
             return RedirectToAction("Stylists");
         }
+
+        [HttpGet("/specialities")]
+        public ActionResult AllSpecialities()
+        {
+            List<Speciality> allSpecialities = new List<Speciality>{};
+            allSpecialities = Speciality.GetAll();
+            return View(allSpecialities);
+        }
+        [HttpGet("/new/speciality")]
+        public ActionResult newSpeciality()
+        {
+            return View();
+        }
+        [HttpPost("/new/speciality")]
+        public ActionResult newSpeciality_Save()
+        {
+            string name = Request.Form["name"];
+            Speciality newSpeciality = new Speciality(name);
+            newSpeciality.Save();
+            return RedirectToAction("newSpeciality");
+        }
+        [HttpGet("/speciality/{id}")]
+        public ActionResult SpecialityDetail(int id)
+        {
+            Speciality findSpeciality = new Speciality();
+            findSpeciality.SetId(id);
+            List<Stylist> allStylistsWithSpeciality = new List<Stylist>{};
+            allStylistsWithSpeciality = Speciality.StylistsWithSpeciality(findSpeciality);
+            ViewBag.Speciality = Speciality.Find(id);
+            ViewBag.AllStylists = allStylistsWithSpeciality;
+            return View();
+        }
+        [HttpPost("/speciality/{id}")]
+        public ActionResult SpecialityDetail_Update(int id)
+        {
+            string name = Request.Form["nameInput"];
+            Console.WriteLine(name);
+            Speciality newSpeciality = new Speciality();
+            newSpeciality.SetId(id);
+            newSpeciality.UpdateName(name);
+            return RedirectToAction("SpecialityDetail");
+
+        }
+
     }
 }

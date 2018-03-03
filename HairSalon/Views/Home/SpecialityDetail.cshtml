@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Hair Salon</title>
+  <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css'>
+  <script src="~/js/jquery-3.2.1.min.js"></script>
+  <link rel='stylesheet' href="~/css/styles.css">
+</head>
+<body>
+  <div class = "container">
+    <div class = "row">
+      <div class = "col-md-12">
+        <h2> Speciality Information Page </h2>
+        <hr>
+
+          <h4>Name:@ViewBag.Speciality.GetName()  <button type="button" class="btn" id="changeName"><span class="glyphicon glyphicon-cog"></span></button></h4>
+          <form id="changeName" action = "/speciality/@ViewBag.Speciality.GetId()" method = "post">
+            <div class="form-group initHidden" id="nameGroup">
+              <label for="nameInput">Change Speciality Name To:</label>
+              <input type="text" name="nameInput" value="@ViewBag.Speciality.GetName()">
+              <button type="submit" class="btn">Change</button>
+            </div>
+          </form>
+          <hr>
+          <h4>Stylists with this Speciality:</h4>
+          <ul>
+            @foreach (var stylist in ViewBag.AllStylists)
+            {
+              <li><a href = "/stylists/@stylist.GetId()">@stylist.GetName()</a></li>
+            }
+          </ul>
+          <hr>
+          <button type="button" class="btn btn-default btn-sm"><a href="/">Home</a></button>
+          <button type="button" class="btn btn-default btn-sm"><a href="/stylists">All Stylists</a></button>
+          <button type="button" class="btn btn-default btn-sm"><a href="/specialities">All Specialities</a></button>
+
+      </div>
+    </div>
+  <div id="footer"><br> Alexander Neumann March 2nd, 2018</div>
+</body>
+
+<script type="text/javascript">
+  $(document).ready(function(){
+    $(".initHidden").toggleClass("hidden");
+    $("#changeName").click(function(){
+        $(".initHidden").toggleClass("hidden");
+    });
+  });
+</script>
